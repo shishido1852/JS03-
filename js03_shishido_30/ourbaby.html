@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>OUR BABY</title>
+    <link rel="stylesheet" href="../style.css" />
+    <!-- <style>
+      /* この中にcssをかけます */
+
+    </style> -->
+  </head>
+  <header>
+    <h1 class="title">OURBABY</h1>
+  </header>
+
+  <body>
+    <!-- ブラウザの画面に見える内容 -->
+
+    <div>
+      <!-- 名前 -->
+      <p class="name_text">Name of the parent</p>
+
+      <input type="text" id="username" />
+    </div>
+
+    <div>
+      <p class="month_text">How old a baby is</p>
+
+      <select name="month" id="month">
+        <!-- 赤ちゃん生後●ヶ月 -->
+
+        <option value="生後０ヶ月">赤ちゃんは生後０ヶ月</option>
+        <option value="生後1ヶ月">赤ちゃんは生後1ヶ月</option>
+        <option value="生後2ヶ月">赤ちゃんは生後2ヶ月</option>
+        <option value="生後3ヶ月">赤ちゃんは生後3ヶ月</option>
+        <option value="生後4ヶ月">赤ちゃんは生後4ヶ月</option>
+        <option value="生後5ヶ月">赤ちゃんは生後5ヶ月</option>
+        <option value="生後6ヶ月">赤ちゃんは生後6ヶ月</option>
+        <option value="生後7ヶ月">赤ちゃんは生後7ヶ月</option>
+        <option value="生後8ヶ月">赤ちゃんは生後8ヶ月</option>
+        <option value="生後9ヶ月">赤ちゃんは生後9ヶ月</option>
+        <option value="生後10ヶ月">赤ちゃんは生後10ヶ月</option>
+      </select>
+    </div>
+
+    <div>
+      <p class="level_text">What a baby can do<span id="level_box"></span></p>
+      <!-- 出来るようになったこと -->
+      <form name="form1" action="">
+        <label class="levelchek">
+          <input
+            type="checkbox"
+            name="cando"
+            value="首がすわる"
+            checked
+          />首がすわる
+        </label>
+
+        <label class="levelchek">
+          <input
+            type="checkbox"
+            name="cando"
+            value="ハイハイをする"
+          />ハイハイをする
+        </label>
+
+        <label class="levelchek">
+          <input
+            type="checkbox"
+            name="cando"
+            value="寝返りをうつ"
+          />寝返りをうつ
+        </label>
+
+        <label class="levelchek">
+          <input
+            type="checkbox"
+            name="cando"
+            value="離乳食がスタート"
+          />離乳食がスタート
+        </label>
+      </form>
+    </div>
+
+    <div>
+      <p class="textarea_text">Today's a baby</p>
+      <!-- テキストエリア -->
+      <textarea name="" id="text" cols="30" rows="10"></textarea>
+    </div>
+
+    <div class="photo">画像を選択</div>
+    <form id="my_form">
+      <input
+        id="ufile"
+        name="ufile"
+        type="file"
+        accept="image/jpeg,image/png"
+      /><br />
+    </form>
+    <hr />
+    <div>
+      <!-- <p>プレビュー</p>               -->
+      <canvas id="cnvs"></canvas>
+      <!-- canvas要素を配置 -->
+    </div>
+
+    <div>
+      <!-- 送信ボタン -->
+      <button id="send">送信</button>
+    </div>
+
+    <div>
+      <!-- 保存されたデータが表示される箇所 -->
+      <div id="output"></div>
+    </div>
+
+    <!--/ ブラウザの画面に見える内容 -->
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!--** 以下Firebase **-->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <!-- ここにfirebaseのscriptを貼り付ける -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyDDBV5vRkmUDWtcFl6p2ivMYdpioDg7iFg",
+        authDomain: "our-baby-ba253.firebaseapp.com",
+        databaseURL: "https://our-baby-ba253.firebaseio.com",
+        projectId: "our-baby-ba253",
+        storageBucket: "our-baby-ba253.appspot.com",
+        messagingSenderId: "168968020376",
+        appId: "1:168968020376:web:c2edb74b452d478074cbed",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      //firebaseのデーターベース（保存させる場所）を使いますよと言うjsのコードを貼り付ける
+      // xxxxxスクリプトを貼り付ける
+      const newPostRef = firebase.database().ref();
+
+      // ここから下にjqueryの処理を書いて練習します
+      // 送信ボタンをクリックされたら次の処理をする
+      $("#send").on("click", function () {
+        const arr1 = [];
+        const cando = document.form1.cando;
+        for (let i = 0; i < cando.length; i++) {
+          if (cando[i].checked) {
+            arr1.push(cando[i].value);
+          }
+        }
+        document.getElementById("level_box").textContent = arr1;
+
+        // データを登録で送る
+        // 変数を活用する、val()を使って取得
+        // firebaseの送信処理を記述
+
+        // let inputusername = $("#username").val();
+        // let inputtext = $("#text").val();
+
+        newPostRef.push({
+          username: $("#username").val(),
+          text: $("#text").val(),
+          month: $("#month").val(),
+          level_box: $("#level_box").val(),
+        });
+        $("#text").val("");
+        $("#username").val("");
+        $("#month").val("");
+        $("#level_box").val("");
+      });
+
+      // 受信処理
+      newPostRef.on("child_added", function (data) {
+        // ここでデータをhtmlに埋め込む
+        //
+
+        let v = data.val();
+        console.log(v);
+        // let k = data.key;
+        let str = `<p>${v.username}<br>${v.month}<br>${v.level_box}<br>${v.text}</p>`;
+
+        $("#output").prepend(str);
+      });
+
+      // $("#text").on("keydown", function (e) {
+      //   console.log(e);
+      // if(event.keyCode==13)
+      // });
+      //       service firebase.storage {
+      //   match /b/{bucket}/o {
+      //     match /{allPaths=**} {
+      //       allow read, write: if request.auth != null;
+      //     }
+      //   }
+      // }
+
+      var image = new Image();
+      $(function () {
+        // id="ufile"の変化でコールバック
+        $("#ufile").change(function () {
+          // 選択ファイルの有無をチェック
+          if (!this.files.length) {
+            alert("ファイルが選択されていません");
+            return;
+          }
+
+          // Formからファイルを取得
+          var file = this.files[0];
+
+          // (1) HTMLのCanvas要素の取得
+          var canvas = $("#cnvs");
+
+          // (2) getContext()メソッドで描画機能を有効にする
+          var ctx = canvas[0].getContext("2d");
+
+          // 描画イメージインスタンス化
+          // var image = new Image();
+
+          // File API FileReader Objectでローカルファイルにアクセス
+          var fr = new FileReader();
+
+          // ファイル読み込み読み込み完了後に実行 [非同期処理]
+          fr.onload = function (evt) {
+            // 画像がロードされた後にcanvasに描画を行う [非同期処理]
+            image.onload = function () {
+              // (3) プレビュー(Cnavas)のサイズを指定
+              var cnvsH = 140;
+              var cnvsW = (image.naturalWidth * cnvsH) / image.naturalHeight;
+              // (4) Cnavasにサイズアトリビュートを設定する
+              canvas.attr("width", cnvsW);
+              canvas.attr("height", cnvsH);
+              // (5) 描画
+              ctx.drawImage(image, 0, 0, cnvsW, cnvsH);
+            };
+            // 読み込んだ画像をimageのソースに設定
+            image.src = evt.target.result;
+          };
+
+          // fileを読み込む データはBase64エンコードされる
+          fr.readAsDataURL(file);
+        });
+      });
+    </script>
+  </body>
+</html>
